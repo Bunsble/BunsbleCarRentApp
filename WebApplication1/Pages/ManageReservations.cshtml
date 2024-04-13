@@ -1,0 +1,94 @@
+﻿@page
+@model WebApplication1.Pages.ManageReservationsModel
+@{
+    ViewData["Title"] = "Manage Reservations";
+}
+
+<h1>Manage Reservations</h1>
+
+<div class="reservation-list">
+    @foreach (var reservation in Model.Reservations)
+    {
+            <div class="card mb-3">
+                <div class="card-body">
+                    <h5 class="card-title">Reservation ID: @reservation.ReservationID</h5>
+                    <div class="reservation-info">
+                        <p><strong>Car ID:</strong> @reservation.Car.CarID</p>
+                        <p><strong>User ID:</strong> @reservation.User.UserID</p>
+                        <p><strong>Start Date:</strong> @reservation.StartDate.ToShortDateString()</p>
+                        <p><strong>End Date:</strong> @reservation.EndDate.ToShortDateString()</p>
+                        <p><strong>Approved:</strong> @(reservation.Approved ? "Yes" : "No")</p>
+                        <div class="car-info">
+                            <p><strong>Car Information:</strong></p>
+                            <ul>
+                                <li><strong>Brand:</strong> @reservation.Car.Brand</li>
+                                <li><strong>Model:</strong> @reservation.Car.Model</li>
+                                <li><strong>Year:</strong> @reservation.Car.Year</li>
+                                <li><strong>Passenger Capacity:</strong> @reservation.Car.PassengerCapacity</li>
+                                <li><strong>Description:</strong> @reservation.Car.Description</li>
+                                <li><strong>Price Per Day:</strong> @reservation.Car.PricePerDay</li>
+                            </ul>
+                        </div>
+                        <div class="user-info">
+                            <p><strong>User Information:</strong></p>
+                            <ul>
+                                <li><strong>Username:</strong> @reservation.User.Username</li>
+                                <li><strong>First Name:</strong> @reservation.User.FirstName</li>
+                                <li><strong>Last Name:</strong> @reservation.User.LastName</li>
+                                <li><strong>Personal ID:</strong> @reservation.User.PersonalID</li>
+                                <li><strong>Phone Number:</strong> @reservation.User.PhoneNumber</li>
+                                <li><strong>Email Address:</strong> @reservation.User.EmailAddress</li>
+                                <li><strong>Is Admin:</strong> @(reservation.User.IsAdmin ? "Yes" : "No")</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="reservation-actions">
+                           <form method="post" asp-page-handler="ApproveReservation">
+        <input type="hidden" name="reservationId" value="@reservation.ReservationID" />
+        <button type="submit" class="btn btn-success">Approve</button>
+    </form>
+
+    <form method="post" asp-page-handler="DisapproveReservation">
+        <input type="hidden" name="reservationId" value="@reservation.ReservationID" />
+        <button type="submit" class="btn btn-danger">Disapprove</button>
+    </form>
+
+
+                    </div>
+                </div>
+            </div>
+    }
+</div>
+@section Scripts {
+        <script>
+            function approveReservation(reservationId) {
+                $.ajax({
+                    type: "POST",
+                    url: "/ManageReservations?handler=ApproveReservation",
+                    data: { reservationId: reservationId },
+                    success: function () {
+                        // Reload the page after successful approval
+                        location.reload();
+                    },
+                    error: function () {
+                        console.log('Error approving reservation');
+                    }
+                });
+            }
+
+            function disapproveReservation(reservationId) {
+                $.ajax({
+                    type: "POST",
+                    url: "/ManageReservations?handler=DisapproveReservation",
+                    data: { reservationId: reservationId },
+                    success: function () {
+                        // Reload the page after successful disapproval
+                        location.reload();
+                    },
+                    error: function () {
+                        console.log('Error disapproving reservation');
+                    }
+                });
+            }
+        </script>
+}

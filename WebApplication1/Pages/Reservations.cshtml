@@ -1,0 +1,64 @@
+﻿@page
+@model WebApplication1.Pages.ReservationsModel
+@{
+    ViewData["Title"] = "Reservations";
+}
+
+<h1>Reservations</h1>
+
+<div class="table-responsive">
+    <table class="table table-striped table-bordered">
+        <thead class="thead-dark">
+            <tr>
+                <th>Brand</th>
+                <th>Model</th>
+                <th>Year</th>
+                <th>Passenger Capacity</th>
+                <th>Description</th>
+                <th>Price Per Day</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var reservation in Model.Reservations)
+            {
+                    <tr>
+                        <td>@reservation.Brand</td>
+                        <td>@reservation.Model</td>
+                        <td>@reservation.Year</td>
+                        <td>@reservation.PassengerCapacity</td>
+                        <td>@reservation.Description</td>
+                        <td>@reservation.PricePerDay</td>
+                        <td>
+                            <!-- Rent button -->
+                            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#rentModal_@reservation.CarID">Rent</button>
+
+                            <!-- Modal -->
+                            <div class="modal fade" id="rentModal_@reservation.CarID" tabindex="-1" role="dialog" aria-labelledby="rentModalLabel" aria-hidden="true">
+                                <div class="modal-dialog" role="document">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="rentModalLabel">Select End Date</h5>
+                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                <span aria-hidden="true">&times;</span>
+                                            </button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <form method="post">
+                                                <input type="hidden" name="carID" value="@reservation.CarID" />
+                                                <div class="form-group">
+                                                    <label for="endDate">End Date:</label>
+                                                    <input type="date" id="endDate_@reservation.CarID" name="endDate" class="form-control" required />
+                                                </div>
+                                                <button type="submit" class="btn btn-primary" asp-page-handler="Rent" asp-route-carID="@reservation.CarID">Rent</button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+            }
+        </tbody>
+    </table>
+</div>

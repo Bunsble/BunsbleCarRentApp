@@ -1,0 +1,50 @@
+﻿@page
+@using System.Security.Claims
+@model IndexModel
+@{
+    ViewData["Title"] = "Home page";
+}
+
+<div class="container text-center mt-5">
+    <h1 class="display-4 mb-4">Welcome to Car Rental</h1>
+    <p class="lead mb-4">Rent a car hassle-free with our easy-to-use platform</p>
+    
+    <div class="row">
+        <div class="col-md-4">
+            <div class="card mb-4">
+                <div class="card-body">
+                    <h5 class="card-title">Wide Selection of Cars</h5>
+                    <p class="card-text">Choose from a variety of cars ranging from compact to luxury models.</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-4">
+            <div class="card mb-4">
+                <div class="card-body">
+                    <h5 class="card-title">Easy Booking Process</h5>
+                    <p class="card-text">Book your car rental in just a few clicks without any hassle.</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-4">
+            <div class="card mb-4">
+                <div class="card-body">
+                    <h5 class="card-title">Secure Payments</h5>
+                    <p class="card-text">Your payments are safe and secure with our trusted payment gateway.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    @if (User.Identity.IsAuthenticated)
+    {
+        <p class="lead">Welcome, @User.Identity.Name!</p>
+        <a href="/MyProfile" class="btn btn-primary btn-lg">Manage Reservations</a>
+    }
+    else
+    {
+        <a href="/Login" class="btn btn-primary btn-lg">Login / Register</a>
+    }
+</div>

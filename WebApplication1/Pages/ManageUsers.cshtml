@@ -1,0 +1,184 @@
+﻿@page
+@model WebApplication1.Pages.ManageUsersModel
+@{
+    ViewData["Title"] = "Manage Users";
+}
+
+<h1>Manage Users</h1>
+
+<!-- Button to open create user modal -->
+<button type="button" class="btn btn-primary mb-3" data-toggle="modal" data-target="#createUserModal">
+    Create User
+</button>
+
+<!-- Create User Modal -->
+<div class="modal fade" id="createUserModal" tabindex="-1" role="dialog" aria-labelledby="createUserModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="createUserModalLabel">Create New User</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form id="createUserForm" method="post" asp-page-handler="Create">
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="username">Username</label>
+                        <input type="text" class="form-control" id="username" asp-for="NewUser.Username" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="password">Password</label>
+                        <input type="password" class="form-control" id="password" asp-for="NewUser.Password" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="firstName">First Name</label>
+                        <input type="text" class="form-control" id="firstName" asp-for="NewUser.FirstName" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="lastName">Last Name</label>
+                        <input type="text" class="form-control" id="lastName" asp-for="NewUser.LastName" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="personalID">Personal ID</label>
+                        <input type="text" class="form-control" id="personalID" asp-for="NewUser.PersonalID" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="phoneNumber">Phone Number</label>
+                        <input type="text" class="form-control" id="phoneNumber" asp-for="NewUser.PhoneNumber">
+                    </div>
+                    <div class="form-group">
+                        <label for="emailAddress">Email Address</label>
+                        <input type="email" class="form-control" id="emailAddress" asp-for="NewUser.EmailAddress" required>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary">Create</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Edit User Modal -->
+<div class="modal fade" id="editUserModal" tabindex="-1" role="dialog" aria-labelledby="editUserModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editUserModalLabel">Edit User</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form id="editUserForm" method="post" asp-page-handler="Edit">
+                <div class="modal-body">
+                    <input type="hidden" id="editUserId" name="userId" />
+                    <div class="form-group">
+                        <label for="editUsername">Username</label>
+                        <input type="text" class="form-control" id="editUsername" name="username">
+                    </div>
+                    <div class="form-group">
+                        <label for="editPassword">Password</label>
+                        <input type="password" class="form-control" id="editPassword" name="password">
+                    </div>
+                    <div class="form-group">
+                        <label for="editFirstName">First Name</label>
+                        <input type="text" class="form-control" id="editFirstName" name="firstName">
+                    </div>
+                    <div class="form-group">
+                        <label for="editLastName">Last Name</label>
+                        <input type="text" class="form-control" id="editLastName" name="lastName">
+                    </div>
+                    <div class="form-group">
+                        <label for="editPersonalID">Personal ID</label>
+                        <input type="text" class="form-control" id="editPersonalID" name="personalID">
+                    </div>
+                    <div class="form-group">
+                        <label for="editPhoneNumber">Phone Number</label>
+                        <input type="text" class="form-control" id="editPhoneNumber" name="phoneNumber">
+                    </div>
+                    <div class="form-group">
+                        <label for="editEmailAddress">Email Address</label>
+                        <input type="email" class="form-control" id="editEmailAddress" name="emailAddress">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary">Save changes</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Table to display users -->
+<div class="table-responsive">
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Username</th>
+                <th>Password</th>
+                <th>First Name</th>
+                <th>Last Name</th>
+                <th>Personal ID</th>
+                <th>Phone Number</th>
+                <th>Email Address</th>
+                <th>Is Admin</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var user in Model.Users)
+            {
+                    <tr>
+                        <td>@user.Username</td>
+                        <td>@user.Password</td>
+                        <td>@user.FirstName</td>
+                        <td>@user.LastName</td>
+                        <td>@user.PersonalID</td>
+                        <td>@user.PhoneNumber</td>
+                        <td>@user.EmailAddress</td>
+                        <td>@(user.IsAdmin ? "Yes" : "No")</td>
+                        <td>
+                            <button type="button" class="btn btn-info edit-btn" data-toggle="modal" data-target="#editUserModal" data-user-id="@user.UserId">
+                                Edit User
+                            </button>
+                            <form method="post">
+                                <button type="submit" class="btn btn-danger" formaction="/ManageUsers?handler=Delete&amp;userId=@user.UserId">Delete</button>
+                            </form>
+                        </td>
+                    </tr>
+            }
+        </tbody>
+    </table>
+</div>
+@* JavaScript to handle populating the edit modal *@
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            $('.edit-btn').click(function () {
+                // Retrieve data from the clicked row
+                var userId = $(this).data('user-id');
+                var username = $(this).closest('tr').find('td:eq(0)').text(); // Username is in the first column
+                var password = $(this).closest('tr').find('td:eq(1)').text();
+                var firstName = $(this).closest('tr').find('td:eq(2)').text();
+                var lastName = $(this).closest('tr').find('td:eq(3)').text();
+                var personalID = $(this).closest('tr').find('td:eq(4)').text();
+                var phoneNumber = $(this).closest('tr').find('td:eq(5)').text();
+                var emailAddress = $(this).closest('tr').find('td:eq(6)').text();
+                var isAdmin = $(this).closest('tr').find('td:eq(7)').text() === 'Yes'; // Assuming Is Admin is represented as "Yes" or "No" in the table
+                // Populate fields in the edit modal
+                $('#editUserId').val(userId);
+                $('#editUsername').val(username);
+                $('#editPassword').val(password);
+                $('#editFirstName').val(firstName);
+                $('#editLastName').val(lastName);
+                $('#editPersonalID').val(personalID);
+                $('#editPhoneNumber').val(phoneNumber);
+                $('#editEmailAddress').val(emailAddress);
+                $('#editIsAdmin').prop('checked', isAdmin);
+            });
+        });
+    </script>
+}

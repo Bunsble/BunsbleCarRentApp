@@ -1,0 +1,165 @@
+﻿@page
+@model WebApplication1.Pages.ManageCarsModel
+@{
+    ViewData["Title"] = "Manage Cars";
+}
+
+<h1>Manage Cars</h1>
+
+<!-- Button to open create car modal -->
+<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#createCarModal">
+    Create Car
+</button>
+
+<!-- Create Car Modal -->
+<div class="modal fade" id="createCarModal" tabindex="-1" role="dialog" aria-labelledby="createCarModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="createCarModalLabel">Add New Car</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form method="post">
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="brand">Brand</label>
+                        <input type="text" class="form-control" id="brand" asp-for="NewCar.Brand" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="model">Model</label>
+                        <input type="text" class="form-control" id="model" asp-for="NewCar.Model" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="year">Year</label>
+                        <input type="number" class="form-control" id="year" asp-for="NewCar.Year" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="passengerCapacity">Passenger Capacity</label>
+                        <input type="number" class="form-control" id="passengerCapacity" asp-for="NewCar.PassengerCapacity" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="description">Description</label>
+                        <textarea class="form-control" id="description" asp-for="NewCar.Description" required></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="pricePerDay">Price Per Day</label>
+                        <input type="number" step="0.01" class="form-control" id="pricePerDay" asp-for="NewCar.PricePerDay" required>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary">Add Car</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Table to display cars -->
+<table class="table">
+    <thead>
+        <tr>
+            <th>Brand</th>
+            <th>Model</th>
+            <th>Year</th>
+            <th>Passenger Capacity</th>
+            <th>Description</th>
+            <th>Price Per Day</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var car in Model.Cars)
+        {
+                <tr>
+                    <td>@car.Brand</td>
+                    <td>@car.Model</td>
+                    <td>@car.Year</td>
+                    <td>@car.PassengerCapacity</td>
+                    <td>@car.Description</td>
+                    <td>@car.PricePerDay</td>
+                    <td>
+                        <button type="button" class="btn btn-info edit-car-btn" data-toggle="modal" data-target="#editCarModal" data-car-id="@car.CarID">
+                            Edit
+                        </button>
+                        <form method="post">
+                            <button type="submit" class="btn btn-danger" formaction="/ManageCars?handler=Delete&amp;carId=@car.CarID">Delete</button>
+                        </form>
+                    </td>
+                </tr>
+        }
+    </tbody>
+</table>
+
+<!-- Edit Car Modal -->
+<div class="modal fade" id="editCarModal" tabindex="-1" role="dialog" aria-labelledby="editCarModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editCarModalLabel">Edit Car</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form method="post" asp-page-handler="Edit">
+                <div class="modal-body">
+                    <input type="hidden" id="editCarId" name="carId" />
+                    <div class="form-group">
+                        <label for="editBrand">Brand</label>
+                        <input type="text" class="form-control" id="editBrand" name="brand">
+                    </div>
+                    <div class="form-group">
+                        <label for="editModel">Model</label>
+                        <input type="text" class="form-control" id="editModel" name="model">
+                    </div>
+                    <div class="form-group">
+                        <label for="editYear">Year</label>
+                        <input type="number" class="form-control" id="editYear" name="year">
+                    </div>
+                    <div class="form-group">
+                        <label for="editPassengerCapacity">Passenger Capacity</label>
+                        <input type="number" class="form-control" id="editPassengerCapacity" name="passengerCapacity">
+                    </div>
+                    <div class="form-group">
+                        <label for="editDescription">Description</label>
+                        <textarea class="form-control" id="editDescription" name="description"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="editPricePerDay">Price Per Day</label>
+                        <input type="number" step="0.01" class="form-control" id="editPricePerDay" name="pricePerDay">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary">Save changes</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+        <script>
+            $(document).ready(function () {
+                $('.edit-car-btn').click(function () {
+                    var carId = $(this).data('car-id');
+                    var brand = $(this).closest('tr').find('td:eq(0)').text();
+                    var model = $(this).closest('tr').find('td:eq(1)').text();
+                    var year = $(this).closest('tr').find('td:eq(2)').text();
+                    var passengerCapacity = $(this).closest('tr').find('td:eq(3)').text();
+                    var description = $(this).closest('tr').find('td:eq(4)').text();
+                    var pricePerDay = $(this).closest('tr').find('td:eq(5)').text();
+
+                    $('#editCarId').val(carId);
+                    $('#editBrand').val(brand);
+                    $('#editModel').val(model);
+                    $('#editYear').val(year);
+                    $('#editPassengerCapacity').val(passengerCapacity);
+                    $('#editDescription').val(description);
+                    $('#editPricePerDay').val(pricePerDay);
+                });
+            });
+        </script>
+}
